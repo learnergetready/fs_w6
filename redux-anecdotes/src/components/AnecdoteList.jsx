@@ -7,7 +7,7 @@ const Anecdote = ({ anecdote }) => {
 
   const handleClick = (event) => {
     event.preventDefault()
-    dispatch(voteAnecdote(anecdote.id))
+    dispatch(voteAnecdote(anecdote))
     dispatch(setNotification(`you voted for ${anecdote.content}`))
     setTimeout(() => {
       dispatch(clearNotification())
