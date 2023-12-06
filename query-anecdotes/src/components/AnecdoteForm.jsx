@@ -4,13 +4,26 @@ import { useContext } from "react"
 import NotificationContext from "../NotificationContext"
 
 const AnecdoteForm = () => {
+  const [message, dispatchNotification] = useContext(NotificationContext)
+  
+  const onError = (err) => {
+    switch(err.name) {
+      case 'AxiosError':
+        return dispatchNotification({payload: err.response.data.error})
+      default:
+        dispatchNotification({payload: 'Unrecognized error occurred when trying to add anecdote'})
+    }
+    setTimeout(() => {
+      dispatchNotification({payload: null})
+    }, 5000)
+  }
+
   const queryClient = useQueryClient()
   const newAnecdoteMutation = useMutation({ 
     mutationFn:createAnecdote,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['anecdotes'] }),
+    onError: onError
   })
-
-  const [message, dispatchNotification] = useContext(NotificationContext)
 
   const onCreate = (event) => {
     event.preventDefault()
